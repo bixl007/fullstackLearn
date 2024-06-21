@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TODO</title>
+
+    <script>
+      function addTodo() {
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+        const originalHtml = document.getElementById("container").innerHTML;
+        document.getElementById("container").innerHTML =
+          originalHtml +
+          `<div>
+            <div>${title}</div>
+            <div>${description}</div>
+            <button>Mark as done</button>
+        </div>`;
+      }
+    </script>
+  </head>
+
+  <body>
+    <input type="text" id="title" placeholder="title" /><br /><br />
+    <input type="text" id="description" placeholder="text" />
+    <br /><br />
+    <button onclick="addTodo()">Add TODO</button> <br /><br />
+    <div id="container"></div>
+  </body>
+</html>
