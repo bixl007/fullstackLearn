@@ -5,12 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script>
+        /*
         function populateDiv(){
             const a = document.getElementById("first").value;
             const b = document.getElementById("second").value;
-            const element = document.getElementById("finalSum")
-            element.innerHTML = parseInt(a) + parseInt(b)
+            // const element = document.getElementById("finalSum")
+            // element.innerHTML = parseInt(a) + parseInt(b)
+
+            fetch(`https://sum-server.100xdevs.com/sum?a=${a}&b=${b}`)
+            .then(function(res){
+                res.text()
+                .then(function(ans){
+                    document.getElementById("finalSum").innerHTML=ans
+                })
+            })
+
         }
+        */
+
+        async function populateDiv(){
+            const a = document.getElementById("first").value;
+            const b = document.getElementById("second").value;
+
+            const res = await fetch(`https://sum-server.100xdevs.com/sum?a=${a}&b=${b}`);
+            const ans = await res.text();
+            document.getElementById("finalSum").innerHTML=ans;
+        }
+           
     </script>
 </head>
 <body>
