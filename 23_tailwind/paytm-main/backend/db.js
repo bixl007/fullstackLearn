@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 
-mongoose.connect(
-  "url"
-);
+mongoose.connect(url);
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -32,7 +30,6 @@ const userSchema = new mongoose.Schema({
     maxLength: 50,
   },
 });
-
 
 const accountSchema = new mongoose.Schema({
   userId: {
