@@ -3,6 +3,7 @@ import axios from "axios";
 import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../config";
+import { Loader } from "./Loader";
 
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const navigate = useNavigate();
@@ -12,40 +13,57 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   async function sendRequest() {
+    setLoading(true);
     try {
       const response = await axios.post(
         `${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`,
         postInputs
       );
-      const jwt = response.data;
+
+      // Changed from response.data to response.data.jwt assuming backend returns jwt in this field
+      const jwt = response.data.jwt;
+
       localStorage.setItem("token", jwt);
       navigate("/blogs");
     } catch {
-        alert("Error while signup")
+      alert("Error while signing in"); // Error handling is unchanged
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className="h-screen flex justify-center flex-col">
-      <div className="flex justify-center">
+    <div className="relative h-screen flex justify-center items-center">
+      {loading && <Loader />}
+      <div
+        className={`${
+          loading ? "opacity-50" : "opacity-100"
+        } flex justify-center flex-col`}
+      >
         <div>
-          <div className="px-10 ">
-            <div className="text-3xl font-extrabold">Create an account</div>
+          <div className="px-10">
+            <div className="text-3xl font-extrabold">
+              {type === "signup"
+                ? "Create an account"
+                : "Sign in to your account"}
+            </div>
             <div className="text-slate-500">
               {type === "signin"
                 ? "Don't have an account?"
                 : "Already have an account?"}
               <Link
-                className="pl-2 underline "
-                to={type == "signin" ? "/signup" : "/signin"}
+                className="pl-2 underline"
+                to={type === "signin" ? "/signup" : "/signin"}
               >
                 {type === "signin" ? "Sign up" : "Sign in"}
               </Link>
             </div>
           </div>
-          <div className="pt-8 ">
-            {type === "signup" ? (
+          <div className="pt-8">
+            {type === "signup" && (
               <LabelledInput
                 label="Name"
                 placeholder="Bishal Baira....."
@@ -56,7 +74,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                   });
                 }}
               />
-            ) : null}
+            )}
 
             <LabelledInput
               label="Username"
@@ -114,8 +132,8 @@ function LabelledInput({
       <input
         onChange={onChange}
         type={type || "text"}
-        id="first_name"
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+        id={label.toLowerCase().replace(" ", "_")}
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
         placeholder={placeholder}
         required
       />

@@ -39,20 +39,17 @@ userRouter.post("/signup", async (c) => {
       },
       c.env.JWT_SECRET
     );
-    return c.text(jwt);
+    return c.json({ jwt });
   } catch (e) {
     c.status(411);
-    return c.text("User already exists");
+    return c.json({
+      message: "User already exists",
+    });
   }
 });
 
 userRouter.post("/signin", async (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-
   const body = await c.req.json();
-
   const { success } = signinInput.safeParse(body);
 
   if (!success) {
@@ -61,6 +58,11 @@ userRouter.post("/signin", async (c) => {
       message: "Inputs are not correct",
     });
   }
+  
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
 
   const user = await prisma.user.findUnique({
     where: {
